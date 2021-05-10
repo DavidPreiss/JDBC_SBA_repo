@@ -81,8 +81,7 @@ public class StudentService implements StudentDAO {
         return retval;
     }
 
-    @Override
-    public boolean validateStudent(String sEmail, String sPassword) throws SQLException {
+    public static boolean validateStudent(String sEmail, String sPassword) throws SQLException {
         /*
         –This method takes two
         parameters: the first
@@ -117,8 +116,8 @@ public class StudentService implements StudentDAO {
         return false;
     }
 
-    @Override
-    public void registerStudentToCourse(String sEmail, int cId) throws SQLException {
+
+    public static void registerStudentToCourse(String sEmail, int cId) throws SQLException {
         /*
         –After a successful
         student validation,
@@ -146,7 +145,7 @@ public class StudentService implements StudentDAO {
 
         Connection conn = DriverManager.getConnection(URL,USER,PASS);
 
-        String selectSQL = "SELECT * FROM student_course where sEmail = "+sEmail+";";
+        String selectSQL = "SELECT * FROM student_course as sc;"; //where sc.sEmail = "+sEmail+";";
         Statement stmt = conn.createStatement();
         ResultSet result = stmt.executeQuery(selectSQL);
         while(result.next())
@@ -157,6 +156,7 @@ public class StudentService implements StudentDAO {
             if(email.equals(sEmail) && id == cId)
             {
                 need2Add = false;
+                System.out.println("You are already registered in that course!");
                 break;
             }
         }
@@ -168,8 +168,8 @@ public class StudentService implements StudentDAO {
 
     }
 
-    @Override
-    public List<Course> getStudentCourses(String sEmail) throws SQLException {
+
+    public static List<Course> getStudentCourses(String sEmail) throws SQLException {
         List<Course> retval = new ArrayList<>();
         /*
         –This method takes a
@@ -185,7 +185,7 @@ public class StudentService implements StudentDAO {
 
         Connection conn = DriverManager.getConnection(URL,USER,PASS);
 
-        String selectSQL = "SELECT * FROM student_course as sc left join course as c on sc.cId = c.id where sc.sEmail = "+sEmail+";";
+        String selectSQL = "SELECT * FROM student_course as sc left join course as c on sc.cId = c.id;";// where sc.sEmail = "+sEmail+";";
         Statement stmt = conn.createStatement();
         ResultSet result = stmt.executeQuery(selectSQL);
         while(result.next())

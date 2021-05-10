@@ -10,8 +10,8 @@ import java.util.List;
 
 public class CourseService implements CourseDAO {
 
-    @Override
-    public List<Course> getAllCourses() throws SQLException {
+
+    public static List<Course> getAllCourses() throws SQLException {
         /*
         –This method takes no
         parameter and returns

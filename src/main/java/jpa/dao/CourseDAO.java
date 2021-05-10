@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface CourseDAO {
 
-    List<Course> getAllCourses() throws SQLException;
+    static List<Course> getAllCourses() throws SQLException {
+        return null;
+    }
 }
