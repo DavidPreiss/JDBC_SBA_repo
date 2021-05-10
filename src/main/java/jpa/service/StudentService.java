@@ -46,8 +46,7 @@ public class StudentService implements StudentDAO {
     }
 
     @Override
-    public Student getStudentsByEmail(String sEmail) {
-        return null;
+    public Student getStudentsByEmail(String sEmail) throws SQLException {
         /*
         –This method takes a
         Student’s email as a
@@ -57,11 +56,33 @@ public class StudentService implements StudentDAO {
         and returns a Student
         Object.
          */
+        Student retval = null;
+        final String URL = "jdbc:mariadb://localhost/DAVIDS_DATABASE_5_5_2021";
+        final String USER = "root";
+        final String PASS = "root";
+
+        Connection conn = DriverManager.getConnection(URL,USER,PASS);
+
+        String selectSQL = "SELECT * FROM student as s where s.email = "+sEmail+";";
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery(selectSQL);
+        int counter = 0;
+        while(result.next())
+        {
+            //loop start
+            String name = result.getString("name");
+            String password = result.getString("password");
+            String email = result.getString("email");
+            if (sEmail.equals(email))retval=new Student(email,name,password,null);
+            //System.out.printf("%-20s  | %-20s | %-10s \n",name,password,email);
+            counter++;
+        }
+        conn.close();
+        return retval;
     }
 
     @Override
-    public boolean validateStudent(String sEmail, String sPassword) {
-        return false;
+    public boolean validateStudent(String sEmail, String sPassword) throws SQLException {
         /*
         –This method takes two
         parameters: the first
@@ -72,10 +93,32 @@ public class StudentService implements StudentDAO {
         whether or not student
         was found.
          */
+        final String URL = "jdbc:mariadb://localhost/DAVIDS_DATABASE_5_5_2021";
+        final String USER = "root";
+        final String PASS = "root";
+
+        Connection conn = DriverManager.getConnection(URL,USER,PASS);
+
+        String selectSQL = "SELECT * FROM student;";
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery(selectSQL);
+        while(result.next())
+        {
+            //loop start
+            String password = result.getString("password");
+            String email = result.getString("email");
+            if(email.equals(sEmail) && password.equals(sPassword))
+            {
+                conn.close();
+                return true;
+            }
+        }
+        conn.close();
+        return false;
     }
 
     @Override
-    public void registerStudentToCourse(String sEmail, int cId) {
+    public void registerStudentToCourse(String sEmail, int cId) throws SQLException {
         /*
         –After a successful
         student validation,
@@ -96,11 +139,38 @@ public class StudentService implements StudentDAO {
         not.
 
          */
+        boolean need2Add = true;
+        final String URL = "jdbc:mariadb://localhost/DAVIDS_DATABASE_5_5_2021";
+        final String USER = "root";
+        final String PASS = "root";
+
+        Connection conn = DriverManager.getConnection(URL,USER,PASS);
+
+        String selectSQL = "SELECT * FROM student_course where sEmail = "+sEmail+";";
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery(selectSQL);
+        while(result.next())
+        {
+            //loop start
+            int id = result.getInt("cId");
+            String email = result.getString("sEmail");
+            if(email.equals(sEmail) && id == cId)
+            {
+                need2Add = false;
+                break;
+            }
+        }
+        if (need2Add)
+        {
+            stmt.executeQuery("insert into student_course values ('"+ sEmail + "', " + cId + ");");
+        }
+        conn.close();
+
     }
 
     @Override
-    public List<Course> getStudentCourses(String sEmail) {
-        return null;
+    public List<Course> getStudentCourses(String sEmail) throws SQLException {
+        List<Course> retval = new ArrayList<>();
         /*
         –This method takes a
         Student’s Email as a
@@ -108,5 +178,25 @@ public class StudentService implements StudentDAO {
         find all the courses a
         student is registered.
          */
+
+        final String URL = "jdbc:mariadb://localhost/DAVIDS_DATABASE_5_5_2021";
+        final String USER = "root";
+        final String PASS = "root";
+
+        Connection conn = DriverManager.getConnection(URL,USER,PASS);
+
+        String selectSQL = "SELECT * FROM student_course as sc left join course as c on sc.cId = c.id where sc.sEmail = "+sEmail+";";
+        Statement stmt = conn.createStatement();
+        ResultSet result = stmt.executeQuery(selectSQL);
+        while(result.next())
+        {
+            //loop start
+            int id = result.getInt("id");
+            String instructor = result.getString("instructor");
+            String name = result.getString("name");
+            retval.add(new Course(id,name,instructor));
+        }
+        conn.close();
+        return retval;
     }
 }

@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface StudentDAO {
     List<Student> getAllStudents() throws SQLException;
-    Student getStudentsByEmail(String sEmail);
-    boolean validateStudent(String sEmail, String sPassword);
-    void registerStudentToCourse(String sEmail, int cId);
-    List<Course> getStudentCourses(String sEmail);
+    Student getStudentsByEmail(String sEmail) throws SQLException;
+    boolean validateStudent(String sEmail, String sPassword) throws SQLException;
+    void registerStudentToCourse(String sEmail, int cId) throws SQLException;
+    List<Course> getStudentCourses(String sEmail) throws SQLException;
 }
