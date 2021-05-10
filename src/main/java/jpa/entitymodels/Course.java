@@ -1,6 +1,14 @@
+package jpa.entitymodels;
+
 public class Course {
     private int  cID;
     private String cName,cInstructorName;
+
+    public Course() {
+        this.cID = 0;
+        this.cName = "cName";
+        this.cInstructorName = "cInstructorName";
+    }
 
     public Course(int cID, String cName, String cInstructorName) {
         this.cID = cID;

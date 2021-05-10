@@ -1,8 +1,21 @@
+package jpa.entitymodels;
+
+import jpa.entitymodels.Course;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Student {
     String sEmail,sName,sPass;
     List<Course> sCourse;
+
+    public Student() {
+
+        this.sEmail = "sEmail";
+        this.sName = "sName";
+        this.sPass = "sPass";
+        this.sCourse = new ArrayList<>();//{new jpa.entitymodels.Course()};
+    }
 
     public Student(String sEmail, String sName, String sPass, List<Course> sCourse) {
         this.sEmail = sEmail;
